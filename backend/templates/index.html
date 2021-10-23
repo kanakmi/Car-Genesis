@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>Homepage</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        section{
+            background-color: rgb(15, 15, 15);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        nav{
+            padding-top: 30px;
+            top: 0;
+            position: absolute;
+            width: 100%;
+            height: 60px;
+        }
+        .upcard{
+            overflow-x: hidden;
+            border-radius: 10px;
+            height: 70vh;
+            width: 40%;
+            background-color: rgb(12, 73, 114);
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .preview{
+            height: 350px;
+            width: 450px;
+            border-radius: 10px;
+            background-color: rgb(133, 120, 179);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+            background-position:center;
+        }
+        #pcont{
+            height: 350px;
+            width: 450px;
+            display: flex;
+            gap: 15px;
+        }
+        .preview:hover{
+            box-shadow: 0 0 10px rgb(186, 172, 236);
+            cursor: pointer;
+        }
+        #uptext{
+            font-size: 20px;
+            font-family: monospace;
+        }
+        button{
+            width: 150px;
+            height: 40px;
+            border-radius: 12px;
+            border: none;
+            background-color: rgb(7, 7, 56);
+            color:  white;
+        }
+        button:hover{
+            box-shadow: 0 0 10px black;
+            color: green;
+        }
+        #previmg{
+            height: 100%;
+            width: 100%;
+        }
+        .navs{
+            float: left;
+            margin-left: 20px;
+            list-style: none;
+            color: white;
+            display: flex;
+            gap: 30px;
+        }
+        .navs>li{
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .navs>li:hover{
+            border-bottom: 1px solid yellow;
+        }
+        .nav2{
+            float: right;
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        .nav2>a{
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav2>a:hover{
+            border-bottom: 1px solid yellow;
+        }
+        .results{
+            color: white;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <nav>
+            <ul class="navs">
+                <li>Home</li>
+                <li>Car Diagnosis</li>
+                <li>Vehicle Information</li>
+            </ul>
+            <ul class="nav2">
+                <a href=""><li>Login</li></a>
+                <a href=""><li>signup</li></a>
+            </ul>
+        </nav>
+        <div class="upcard">
+            {% if result %}
+            {% for i,j in data.items %}
+            <p class="results">{{ i }} : <span style="color: yellow;">{{ j }}</span></p>
+            {% endfor %}
+            {% else %}
+            <div id="pcont">
+                <div class="preview" onclick="uploadImage()" id="prevoimg1">
+                    <p id="uptext">Upload Your Car Image Here</p>
+                </div>
+            </div>
+            <form action="" method="post" id="fileform" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="noPics" id="noPics" style="display: none;">
+            <button type="submit">Upload</button>
+            </form>
+            {% endif %}
+        </div>
+    </section>
+
+    <script>
+        var images = 0;
+        function uploadImage(){
+            $('#fileform').append('<input type="file" id="imageinput'+images+'" style="display:none;" onchange="previewimage(event)" name="'+images+'">');
+            let nos = $("#noPics").val();
+            nos++;
+            console.log("-------"+nos);
+            $("#noPics").attr('value',nos);
+            document.getElementById('imageinput'+images).click();
+            console.log("Hello world");
+        }
+        function previewimage(event){
+            var reader = new FileReader();
+            reader.onload = function(){
+                document.getElementById('uptext').style.display = 'none';
+                var output = document.getElementById('prevoimg'+images);
+                console.log(images)
+                output.style.display = 'block';
+                output.style.background = "url('"+reader.result+"')";
+                $("#pcont").append('<div class="preview" onclick="uploadImage()" id="prevoimg'+im2+'"></div>');
+            };
+            images++;
+            reader.readAsDataURL(event.target.files[0]);
+            let im2 = images;
+            im2++;
+        }
+    </script>
+</body>
+</html>
